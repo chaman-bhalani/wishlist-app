@@ -1,0 +1,491 @@
+<style>
+    .wishlist {
+      display: flex;
+      justify-content: center;
+      max-width: 44rem;
+    }
+
+    .wishlist-button {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      padding: 0;
+      gap: 6px;
+      cursor: pointer;
+      color: {{ block.settings.colour }};
+    }
+
+    .wishlist-icon {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+      stroke: {{ block.settings.colour }};
+      transition: fill 0.3s ease;
+    }
+
+    .wishlist-text {
+      color: black;
+    }
+
+    .diamond-dropdowns {
+      margin-top: 1rem;
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+
+    .diamond-dropdowns.hidden {
+      display: none;
+    }
+
+    .diamond-dropdowns label {
+      display: flex;
+      flex-direction: column;
+      font-size: 1.1rem;
+      color: #333;
+      flex: 1 1 200px;
+    }
+
+    .diamond-dropdowns select {
+      margin-top: 0.5rem;
+      padding: 0.75rem 1rem;
+      font-size: 1.1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background-color: #fff;
+      color: #333;
+      appearance: none;
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      transition: border-color 0.2s ease;
+      width: 100%;
+    }
+
+    .diamond-dropdowns select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(92, 106, 196, 0.3);
+      background-color:none;
+    }
+    .diamond-dropdowns select:hover {
+      background-color: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    {% comment %} table styles {% endcomment %}
+
+    .diamond-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .diamond-table thead {
+      background-color: #f0f0f0;
+    }
+
+    .diamond-table th,
+    .diamond-table td {
+      border-bottom: 1px solid #ddd;
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+
+    .diamond-table th {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .diamond-table tbody tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+
+    .diamond-table td {
+      color: #555;
+    }
+
+    .col,
+    .media-icons {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .icon-toggle-wrapper {
+      position: relative;
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+    }
+
+    .diamond-checkbox {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 16px;
+      height: 16px;
+      margin: 0;
+      z-index: 2;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .diamond-icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 16px;
+      height: 16px;
+      z-index: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .icon-toggle-wrapper:hover .diamond-checkbox {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .icon-toggle-wrapper:hover .diamond-icon {
+      opacity: 0;
+    }
+
+    .diamond-checkbox:checked {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .diamond-checkbox:checked ~ .diamond-icon {
+      opacity: 0;
+    }
+
+    @media (max-width: 768px) {
+    .diamond-table {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<div class="wishlist">
+  <button type="button" class="button button--primary button--full-width choose-button" id="choose-button">
+    Choose Your Diamond
+  </button>
+</div>
+<div id="diamond-options" class="diamond-dropdowns hidden ">
+  <label>
+    Price:
+    <select>
+      <option value="">Select</option>
+      <option value="below-500">Below $500</option>
+      <option value="500-2500">$500–$2500</option>
+      <option value="2500-10000">$2500–$10000</option>
+      <option value="above-10000">Above $10000</option>
+    </select>
+  </label>
+  <label>
+    Clarity:
+    <select>
+      <option value="">Select</option>
+      <option value="vs1">VS1</option>
+      <option value="vvs1">VVS1</option>
+      <option value="si1">SI1</option>
+    </select>
+  </label>
+  <label>
+    Size:
+    <select>
+      <option value="">Select</option>
+      <option value="small">Small</option>
+      <option value="medium">Medium</option>
+      <option value="large">Large</option>
+    </select>
+  </label>
+  <label>
+    Carat:
+    <select>
+      <option value="">Select</option>
+      <option value="0.5">0.5</option>
+      <option value="1.0">1.0</option>
+      <option value="1.5">1.5</option>
+    </select>
+  </label>
+</div>
+<div>
+  <table class="diamond-table">
+    <thead>
+      <tr>
+        <th>Origin</th>
+        <th>Carat</th>
+        <th>Color</th>
+        <th>Clarity</th>
+        <th>Media</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <span class="col">
+            <span class="icon-toggle-wrapper">
+              <input type="checkbox" class="diamond-checkbox">
+              <img
+                class="diamond-icon"
+                src="{{ 'diamond-round.svg' | asset_url }}"
+                alt="Diamond icon"
+                width="16"
+                height="16"
+              >
+            </span>
+            Mined
+          </span>
+        </td>
+        <td>2</td>
+        <td>G–H</td>
+        <td>VS2</td>
+        <td>
+          <span class="media-icons">
+            <!-- Video Icon -->
+            <svg
+              class="icon-video"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+            </svg>
+            <!-- Document Icon -->
+            <svg
+              class="icon-document"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="8" y1="13" x2="16" y2="13" />
+              <line x1="8" y1="17" x2="16" y2="17" />
+              <line x1="8" y1="9" x2="12" y2="9" />
+            </svg>
+          </span>
+        </td>
+        <td>
+          <span class="col">
+            $4,500
+            <!-- Arrow Icon -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </span>
+        </td>
+      </tr>
+
+      <!-- Repeatable Row -->
+      <tr>
+        <td>
+          <span class="col">
+            <span class="icon-toggle-wrapper">
+              <input type="checkbox" class="diamond-checkbox">
+              <img
+                class="diamond-icon"
+                src="{{ 'diamond-round.svg' | asset_url }}"
+                alt="Diamond icon"
+                width="16"
+                height="16"
+              >
+            </span>
+            Lab Grown
+          </span>
+        </td>
+        <td>2</td>
+        <td>D–F</td>
+        <td>V</td>
+        <td>
+          <span class="media-icons">
+            <svg
+              class="icon-video"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+            </svg>
+            <svg
+              class="icon-document"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="8" y1="13" x2="16" y2="13" />
+              <line x1="8" y1="17" x2="16" y2="17" />
+              <line x1="8" y1="9" x2="12" y2="9" />
+            </svg>
+          </span>
+        </td>
+        <td>
+          <span class="col">
+            $1,800
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="15"
+              height="15"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const chooseBtn = document.getElementById('choose-button');
+    const dropdowns = document.getElementById('diamond-options');
+
+    chooseBtn?.addEventListener('click', () => {
+      dropdowns.classList.toggle('hidden');
+    });
+  });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const addToCartBtn = document.querySelector('button[name="add"]');
+      const customerId = {{ customer.id | json }};
+      const productId = '{{ product.id }}';
+      const shop = '{{ shop.permanent_domain }}';
+      const appurl = 'https://maple-stephen-fame-profits.trycloudflare.com/';
+      {% comment %} const icon = document.getElementById('choose-icon'); {% endcomment %}
+      const button = document.getElementById('choose-button');
+      button?.addEventListener('click', toggleWishlist);
+      let wishlisted = false;
+      addToCartBtn?.setAttribute('disabled',true);
+      async function fetchWishlistStatus() {
+      try {
+      const res = await fetch(
+        `${appurl}/api/wishlist?customerId=${customerId}&productId=${productId}&shop=${shop}`
+      );
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const result = await res.json();
+      console.log("Wishlist fetch result:", result);
+
+        if (result?.data && result.data.length > 0) {
+          wishlisted = true; 
+        }
+      } catch (err) {
+        console.error('Fetch status error:', err);
+      }
+    }
+
+      async function toggleWishlist() {
+        if (!customerId) {
+          alert('Please log in to add items to your wishlist.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('customerId', customerId);
+        formData.append('productId', productId);
+        formData.append('shop', shop);
+        formData.append('_action', wishlisted ? 'DELETE' : 'CREATE');
+
+        try {
+          await fetch(`${appurl}/api/wishlist`, {
+            method: 'POST',
+            body: formData,
+          });
+
+          wishlisted = !wishlisted;
+          console.log(customerId, productId, shop, wishlisted);
+        } catch (err) {
+          console.error('Toggle wishlist error:', err);
+        }
+      }
+
+      fetchWishlistStatus();
+    });
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist",
+  "target": "section",
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Product",
+      "autofill": true
+    },
+    {
+      "type": "color",
+      "id": "colour",
+      "label": "Icon/Text Colour",
+      "default": "#666666"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Add to wishlist"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,32 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "ec844616551597342013c52abc30d327"
+name = "wishlist-app"
+handle = "wishlist-app-391"
+application_url = "https://maple-stephen-fame-profits.trycloudflare.com"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = true
+
+[webhooks]
+api_version = "2025-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "/webhooks/app/uninstalled"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/scopes_update" ]
+  uri = "/webhooks/app/scopes_update"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = ["https://maple-stephen-fame-profits.trycloudflare.com/auth/callback", "https://maple-stephen-fame-profits.trycloudflare.com/auth/shopify/callback", "https://maple-stephen-fame-profits.trycloudflare.com/api/auth/callback"]
+
+[pos]
+embedded = false
