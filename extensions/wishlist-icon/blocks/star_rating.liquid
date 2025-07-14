@@ -1,223 +1,527 @@
 <style>
-    .wishlist {
-      display: flex;
-      justify-content: center;
-      max-width: 44rem;
-    }
+  /* Wishlist Button */
+  .wishlist {
+    display: flex;
+    justify-content: center;
+    max-width: 44rem;
+  }
 
-    .wishlist-button {
-      display: flex;
-      align-items: center;
-      background: none;
-      border: none;
-      padding: 0;
-      gap: 6px;
-      cursor: pointer;
-      color: {{ block.settings.colour }};
-    }
+  .wishlist-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    padding: 0;
+    gap: 6px;
+    cursor: pointer;
+    color: {{ block.settings.colour }};
+  }
 
-    .wishlist-icon {
-      width: 18px;
-      height: 18px;
-      stroke-width: 2;
-      stroke: {{ block.settings.colour }};
-      transition: fill 0.3s ease;
-    }
+  .wishlist-icon {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2;
+    stroke: {{ block.settings.colour }};
+    transition: fill 0.3s ease;
+  }
 
-    .wishlist-text {
-      color: black;
-    }
+  .wishlist-text {
+    color: black;
+  }
+  /* Diamond Table */
+  .diamond-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+  }
 
-    .diamond-dropdowns {
-      margin-top: 1rem;
-      display: flex;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      background-color: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
+  .diamond-table thead {
+    background-color: #f0f0f0;
+  }
 
-    .diamond-dropdowns.hidden {
-      display: none;
-    }
+  .diamond-table th,
+  .diamond-table td {
+    border-bottom: 1px solid #ddd;
+    padding: 0.75rem 1rem;
+    text-align: left;
+  }
 
-    .diamond-dropdowns label {
-      display: flex;
-      flex-direction: column;
-      font-size: 1.1rem;
-      color: #333;
-      flex: 1 1 200px;
-    }
+  .diamond-table th {
+    font-weight: 600;
+    color: #333;
+  }
 
-    .diamond-dropdowns select {
-      margin-top: 0.5rem;
-      padding: 0.75rem 1rem;
-      font-size: 1.1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background-color: #fff;
-      color: #333;
-      appearance: none;
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      background-size: 1em;
-      transition: border-color 0.2s ease;
-      width: 100%;
-    }
+  .diamond-table tbody tr:nth-child(even) {
+    background-color: #fafafa;
+  }
 
-    .diamond-dropdowns select:focus {
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(92, 106, 196, 0.3);
-      background-color:none;
-    }
-    .diamond-dropdowns select:hover {
-      background-color: none;
-    }
+  .diamond-table td {
+    color: #555;
+  }
 
-    .hidden {
-      display: none !important;
-    }
+  .col,
+  .media-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
 
-    {% comment %} table styles {% endcomment %}
+  .icon-toggle-wrapper {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+  }
 
-    .diamond-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 2rem;
-      font-size: 1.1rem;
-    }
+  .diamond-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    z-index: 2;
+    opacity: 0;
+    pointer-events: none;
+  }
 
-    .diamond-table thead {
-      background-color: #f0f0f0;
-    }
+  .diamond-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    z-index: 1;
+    transition: opacity 0.2s ease;
+  }
 
-    .diamond-table th,
-    .diamond-table td {
-      border-bottom: 1px solid #ddd;
-      padding: 0.75rem 1rem;
-      text-align: left;
-    }
+  .icon-toggle-wrapper:hover .diamond-checkbox {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-    .diamond-table th {
-      font-weight: 600;
-      color: #333;
-    }
+  .icon-toggle-wrapper:hover .diamond-icon {
+    opacity: 0;
+  }
 
-    .diamond-table tbody tr:nth-child(even) {
-      background-color: #fafafa;
-    }
+  .diamond-checkbox:checked {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-    .diamond-table td {
-      color: #555;
-    }
+  .diamond-checkbox:checked ~ .diamond-icon {
+    opacity: 0;
+  }
 
-    .col,
-    .media-icons {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .icon-toggle-wrapper {
-      position: relative;
-      width: 16px;
-      height: 16px;
-      display: inline-block;
-    }
-
-    .diamond-checkbox {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 16px;
-      height: 16px;
-      margin: 0;
-      z-index: 2;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .diamond-icon {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 16px;
-      height: 16px;
-      z-index: 1;
-      transition: opacity 0.2s ease;
-    }
-
-    .icon-toggle-wrapper:hover .diamond-checkbox {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .icon-toggle-wrapper:hover .diamond-icon {
-      opacity: 0;
-    }
-
-    .diamond-checkbox:checked {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .diamond-checkbox:checked ~ .diamond-icon {
-      opacity: 0;
-    }
-
-    @media (max-width: 768px) {
+  @media (max-width: 768px) {
     .diamond-table {
       font-size: 1rem;
     }
   }
+
+  /* Media Modal */
+  .media-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    justify-content: center;
+    align-items: center;
+  }
+
+  .media-modal.active {
+    display: flex;
+  }
+
+  .media-content {
+    width: 500px;
+    max-width: 500px;
+    height: 80%;
+    background: transparent;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .media-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .media-close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: black;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .open-media {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('sharedMediaModal');
+    const iframe = document.getElementById('mediaPlayer');
+    const openBtns = document.querySelectorAll('.open-media');
+    const closeBtn = modal.querySelector('.media-close');
+
+    openBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const videoUrl = btn.getAttribute('data-video');
+        if (videoUrl) {
+          iframe.src = videoUrl;
+          modal.classList.add('active');
+        }
+      });
+    });
+
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+      iframe.src = '';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        iframe.src = '';
+      }
+    });
+  });
+</script>
 
 <div class="wishlist">
   <button type="button" class="button button--primary button--full-width choose-button" id="choose-button">
     Choose Your Diamond
   </button>
 </div>
-<div id="diamond-options" class="diamond-dropdowns hidden ">
-  <label>
-    Price:
-    <select>
-      <option value="">Select</option>
-      <option value="below-500">Below $500</option>
-      <option value="500-2500">$500–$2500</option>
-      <option value="2500-10000">$2500–$10000</option>
-      <option value="above-10000">Above $10000</option>
-    </select>
-  </label>
-  <label>
-    Clarity:
-    <select>
-      <option value="">Select</option>
-      <option value="vs1">VS1</option>
-      <option value="vvs1">VVS1</option>
-      <option value="si1">SI1</option>
-    </select>
-  </label>
-  <label>
-    Size:
-    <select>
-      <option value="">Select</option>
-      <option value="small">Small</option>
-      <option value="medium">Medium</option>
-      <option value="large">Large</option>
-    </select>
-  </label>
-  <label>
-    Carat:
-    <select>
-      <option value="">Select</option>
-      <option value="0.5">0.5</option>
-      <option value="1.0">1.0</option>
-      <option value="1.5">1.5</option>
-    </select>
-  </label>
+
+<style>
+  .diamond-dropdowns {
+    margin-top: 1rem;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .filter-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 8px 14px;
+    width: 24%;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  .filter-btn:hover {
+    background-color: #f2f2f2;
+  }
+  .filter-btn.active {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  .slider-container {
+    margin-top: 5px;
+  }
+
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .slider-wrapper {
+    position: relative;
+    height: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .slider-wrapper input[type='range'] {
+    position: absolute;
+    width: 100%;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    -webkit-appearance: none;
+    background: transparent;
+    z-index: 3;
+    height: 0;
+    margin: 0;
+  }
+
+  .slider-wrapper input[type='range']::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #40454bff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 4;
+    margin-top: 0;
+    transition: background 0.2s;
+  }
+
+  .slider-wrapper input[type='range']::-webkit-slider-thumb:active {
+    background: #40454bff;
+  }
+
+  .slider-wrapper input[type='range']::-moz-range-thumb {
+    pointer-events: all;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #40454bff;
+    cursor: pointer;
+    position: relative;
+    z-index: 4;
+    transition: background 0.2s;
+  }
+
+  .slider-wrapper input[type='range']::-moz-range-thumb:active {
+    background: #40454bff;
+  }
+
+  .slider-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: #e0e0e0;
+    border-radius: 4px;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+
+  .slider-range {
+    position: absolute;
+    height: 100%;
+    background: #007bff;
+    border-radius: 4px;
+    left: var(--left, 0%);
+    right: calc(100% - var(--right, 100%));
+    z-index: 2;
+  }
+
+  .input-pair {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3px;
+  }
+
+  .input-pair input {
+    width: 100px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+
+  .hidden {
+    display: none;
+  }
+  .range-label {
+    font-size: 14px;
+  }
+</style>
+
+<div id="diamond-options" class="diamond-dropdowns hidden diamond-content">
+  <div class="filters-heading">Filters:</div>
+  <div class="filter-buttons">
+    <button type="button" class="filter-btn " data-target="slider-price">Price</button>
+    <button type="button" class="filter-btn" data-target="slider-clarity">Clarity</button>
+    <button type="button" class="filter-btn" data-target="slider-color">Color</button>
+    <button type="button" class="filter-btn" data-target="slider-carat">Carat</button>
+  </div>
+
+  <div class="sliders-wrapper">
+    <div class="slider-container hidden" id="slider-price">
+      <label class="range-label">Price Range ($):</label>
+      <div class="slider-wrapper">
+        <div class="slider-track">
+          <div class="slider-range" id="track-price"></div>
+        </div>
+        <input type="range" id="priceMin" min="100" max="20000" value="500" step="100">
+        <input type="range" id="priceMax" min="100" max="20000" value="10000" step="100">
+      </div>
+      <div class="input-pair">
+        <input type="number" id="priceMinInput" value="500">
+        <input type="number" id="priceMaxInput" value="10000">
+      </div>
+    </div>
+
+    <div class="slider-container hidden" id="slider-clarity">
+      <label class="range-label">Clarity Level:</label>
+      <div class="slider-wrapper">
+        <div class="slider-track">
+          <div class="slider-range" id="track-clarity"></div>
+        </div>
+        <input type="range" id="clarityMin" min="1" max="8" value="2" step="1">
+        <input type="range" id="clarityMax" min="1" max="8" value="6" step="1">
+      </div>
+      <div class="slider-labels">
+        <span>SI2</span>
+        <span>SI1</span>
+        <span>VS2</span>
+        <span>VS1</span>
+        <span>VVS2</span>
+        <span>VVS1</span>
+        <span>IF</span>
+        <span>FL</span>
+      </div>
+    </div>
+
+    <div class="slider-container hidden" id="slider-color">
+      <label class="range-label">Color Grade:</label>
+      <div class="slider-wrapper">
+        <div class="slider-track">
+          <div class="slider-range" id="track-color"></div>
+        </div>
+        <input type="range" id="colorMin" min="1" max="7" value="2" step="1">
+        <input type="range" id="colorMax" min="1" max="7" value="5" step="1">
+      </div>
+      <div class="slider-labels">
+        <span>J</span>
+        <span>I</span>
+        <span>H</span>
+        <span>G</span>
+        <span>F</span>
+        <span>E</span>
+        <span>D</span>
+      </div>
+    </div>
+
+    <div class="slider-container hidden" id="slider-carat">
+      <label class="range-label">Carat Range (ct):</label>
+      <div class="slider-wrapper">
+        <div class="slider-track">
+          <div class="slider-range" id="track-carat"></div>
+        </div>
+        <input type="range" id="caratMin" min="0.3" max="5.0" step="0.1" value="0.5">
+        <input type="range" id="caratMax" min="0.3" max="5.0" step="0.1" value="2.0">
+      </div>
+      <div class="input-pair">
+        <input type="number" id="caratMinInput" step="0.1" value="0.5">
+        <input type="number" id="caratMaxInput" step="0.1" value="2.0">
+      </div>
+    </div>
+  </div>
 </div>
-<div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const sliderContainers = document.querySelectorAll('.slider-container');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-target');
+
+        sliderContainers.forEach((container) => {
+          container.id === target ? container.classList.remove('hidden') : container.classList.add('hidden');
+        });
+
+        filterButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+
+    function setupSlider(minId, maxId, trackId, inputMinId = null, inputMaxId = null) {
+      const minEl = document.getElementById(minId);
+      const maxEl = document.getElementById(maxId);
+      const trackEl = document.getElementById(trackId);
+      const inputMin = inputMinId ? document.getElementById(inputMinId) : null;
+      const inputMax = inputMaxId ? document.getElementById(inputMaxId) : null;
+
+      function updateTrack() {
+        const min = parseFloat(minEl.value);
+        const max = parseFloat(maxEl.value);
+        const minLimit = parseFloat(minEl.min);
+        const maxLimit = parseFloat(maxEl.max);
+        const range = maxLimit - minLimit;
+
+        const left = ((min - minLimit) / range) * 100;
+        const right = ((max - minLimit) / range) * 100;
+
+        trackEl.style.left = `${left}%`;
+        trackEl.style.right = `${100 - right}%`;
+      }
+
+      function syncInputs() {
+        if (inputMin) inputMin.value = minEl.value;
+        if (inputMax) inputMax.value = maxEl.value;
+        updateTrack();
+      }
+
+      minEl.addEventListener('input', () => {
+        if (+minEl.value > +maxEl.value) minEl.value = maxEl.value;
+        syncInputs();
+      });
+
+      maxEl.addEventListener('input', () => {
+        if (+maxEl.value < +minEl.value) maxEl.value = minEl.value;
+        syncInputs();
+      });
+
+      if (inputMin && inputMax) {
+        inputMin.addEventListener('input', () => {
+          minEl.value = inputMin.value;
+          syncInputs();
+        });
+        inputMax.addEventListener('input', () => {
+          maxEl.value = inputMax.value;
+          syncInputs();
+        });
+      }
+
+      syncInputs();
+    }
+
+    // Initialize all sliders
+    setupSlider('priceMin', 'priceMax', 'track-price', 'priceMinInput', 'priceMaxInput');
+    setupSlider('caratMin', 'caratMax', 'track-carat', 'caratMinInput', 'caratMaxInput');
+    setupSlider('clarityMin', 'clarityMax', 'track-clarity');
+    setupSlider('colorMin', 'colorMax', 'track-color');
+  });
+</script>
+
+<!-- Table -->
+<div id="diamond-table-wrapper" class="hidden diamond-content">
   <table class="diamond-table">
+    <!-- Table Header -->
     <thead>
       <tr>
         <th>Origin</th>
@@ -228,6 +532,7 @@
         <th>Price</th>
       </tr>
     </thead>
+    <!-- Row-1 -->
     <tbody>
       <tr>
         <td>
@@ -251,40 +556,54 @@
         <td>
           <span class="media-icons">
             <!-- Video Icon -->
-            <svg
-              class="icon-video"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            <button
+              type="button"
+              class="open-media video-trigger"
+              data-video="https://app.unbridaled.ai/360player?url=https://unbridaled-prod.s3.amazonaws.com/das/uploads/v360/frames/UB214EC21840&width=100%25&height=100%25&animate=true&noCache=true&image_ext=png"
+              aria-label="Open video"
             >
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
-            </svg>
+              <svg
+                class="icon-video"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
             <!-- Document Icon -->
-            <svg
-              class="icon-document"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            <button
+              type="button"
+              class="open-media"
+              data-video="https://cdn.shopify.com/s/files/1/0942/5977/3745/files/Document_from_Chaman_-_Sheet1.pdf?v=1752228528"
+              aria-label="Open video"
             >
-              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="8" y1="13" x2="16" y2="13" />
-              <line x1="8" y1="17" x2="16" y2="17" />
-              <line x1="8" y1="9" x2="12" y2="9" />
-            </svg>
+              <svg
+                class="icon-document"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="8" y1="13" x2="16" y2="13" />
+                <line x1="8" y1="17" x2="16" y2="17" />
+                <line x1="8" y1="9" x2="12" y2="9" />
+              </svg>
+            </button>
           </span>
         </td>
         <td>
@@ -309,7 +628,7 @@
         </td>
       </tr>
 
-      <!-- Repeatable Row -->
+      <!-- Row-2 -->
       <tr>
         <td>
           <span class="col">
@@ -331,39 +650,53 @@
         <td>V</td>
         <td>
           <span class="media-icons">
-            <svg
-              class="icon-video"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+            <button
+              type="button"
+              class="open-media video-trigger"
+              data-video="https://app.unbridaled.ai/360player?url=https://unbridaled-prod.s3.amazonaws.com/das/uploads/v360/frames/UB214EC21840&width=100%25&height=100%25&animate=true&noCache=true&image_ext=png"
+              aria-label="Open video"
             >
-              <circle cx="12" cy="12" r="10" />
-              <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
-            </svg>
-            <svg
-              class="icon-document"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              <svg
+                class="icon-video"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="open-media"
+              data-video="https://cdn.shopify.com/s/files/1/0942/5977/3745/files/Document_from_Chaman_-_Sheet1.pdf?v=1752228528"
+              aria-label="Open video"
             >
-              <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="8" y1="13" x2="16" y2="13" />
-              <line x1="8" y1="17" x2="16" y2="17" />
-              <line x1="8" y1="9" x2="12" y2="9" />
-            </svg>
+              <svg
+                class="icon-document"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="8" y1="13" x2="16" y2="13" />
+                <line x1="8" y1="17" x2="16" y2="17" />
+                <line x1="8" y1="9" x2="12" y2="9" />
+              </svg>
+            </button>
           </span>
         </td>
         <td>
@@ -393,75 +726,160 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const chooseBtn = document.getElementById('choose-button');
-    const dropdowns = document.getElementById('diamond-options');
+    const diamondContentEls = document.querySelectorAll('.diamond-content');
+    const addToCartBtn = document.querySelector('button[name="add"]');
+    const customerId = {{ customer.id | json }};
+    const productId = '{{ product.id }}';
+    const shop = '{{ shop.permanent_domain }}';
+    const appurl = 'https://yields-moon-cleaners-groups.trycloudflare.com/';
+    let wishlisted = false;
+    const checkboxes = document.querySelectorAll('.diamond-checkbox');
+    const rows = document.querySelectorAll('.diamond-table tbody tr');
+
+    function updateAddButtonState() {
+      const isChecked = document.querySelector('.diamond-checkbox:checked') !== null;
+      addToCartBtn.disabled = !isChecked;
+    }
+
+    function initTableSelection() {
+      rows.forEach(row => {
+        row.addEventListener('mouseenter', () => {
+          const checkbox = row.querySelector('.diamond-checkbox');
+          checkbox.style.opacity = '1';
+        });
+        
+        row.addEventListener('mouseleave', () => {
+          const checkbox = row.querySelector('.diamond-checkbox');
+          if (!checkbox.checked) {
+            checkbox.style.opacity = '0';
+          }
+        });
+        
+        row.addEventListener('click', (e) => {
+          if (e.target.closest('.open-media') || e.target.tagName === 'A') {
+            return;
+          }
+          
+          const checkbox = row.querySelector('.diamond-checkbox');
+          
+          checkboxes.forEach(cb => {
+            if (cb !== checkbox) {
+              cb.checked = false;
+              cb.closest('tr').classList.remove('checked');
+              cb.style.opacity = '0';
+            }
+          });
+          
+          checkbox.checked = !checkbox.checked;
+          
+          if (checkbox.checked) {
+            row.classList.add('checked');
+            checkbox.style.opacity = '1';
+          } else {
+            row.classList.remove('checked');
+            checkbox.style.opacity = '0';
+          }
+          
+          updateAddButtonState();
+        });
+      });
+      
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', function(e) {
+          e.stopPropagation(); 
+          
+          checkboxes.forEach(cb => {
+            if (cb !== checkbox) {
+              cb.checked = false;
+              cb.closest('tr').classList.remove('checked');
+              cb.style.opacity = '0';
+            }
+          });
+          
+          const row = checkbox.closest('tr');
+          if (checkbox.checked) {
+            row.classList.add('checked');
+          } else {
+            row.classList.remove('checked');
+          }
+          
+          updateAddButtonState();
+        });
+      });
+    }
 
     chooseBtn?.addEventListener('click', () => {
-      dropdowns.classList.toggle('hidden');
+      diamondContentEls.forEach(el => el.classList.toggle('hidden'));
     });
-  });
-</script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const addToCartBtn = document.querySelector('button[name="add"]');
-      const customerId = {{ customer.id | json }};
-      const productId = '{{ product.id }}';
-      const shop = '{{ shop.permanent_domain }}';
-      const appurl = 'https://maple-stephen-fame-profits.trycloudflare.com/';
-      {% comment %} const icon = document.getElementById('choose-icon'); {% endcomment %}
-      const button = document.getElementById('choose-button');
-      button?.addEventListener('click', toggleWishlist);
-      let wishlisted = false;
-      addToCartBtn?.setAttribute('disabled',true);
-      async function fetchWishlistStatus() {
+    async function fetchWishlistStatus() {
       try {
-      const res = await fetch(
-        `${appurl}/api/wishlist?customerId=${customerId}&productId=${productId}&shop=${shop}`
-      );
+        const res = await fetch(
+          `${appurl}/api/wishlist?customerId=${customerId}&productId=${productId}&shop=${shop}`
+        );
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
-      const result = await res.json();
-      console.log("Wishlist fetch result:", result);
-
+        const result = await res.json();
         if (result?.data && result.data.length > 0) {
-          wishlisted = true; 
+          wishlisted = true;
+          diamondContentEls.forEach(el => el.classList.remove('hidden'));
+          
+          initTableSelection();
+        } else {
+          diamondContentEls.forEach(el => el.classList.add('hidden'));
         }
       } catch (err) {
         console.error('Fetch status error:', err);
       }
     }
 
-      async function toggleWishlist() {
-        if (!customerId) {
-          alert('Please log in to add items to your wishlist.');
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append('customerId', customerId);
-        formData.append('productId', productId);
-        formData.append('shop', shop);
-        formData.append('_action', wishlisted ? 'DELETE' : 'CREATE');
-
-        try {
-          await fetch(`${appurl}/api/wishlist`, {
-            method: 'POST',
-            body: formData,
-          });
-
-          wishlisted = !wishlisted;
-          console.log(customerId, productId, shop, wishlisted);
-        } catch (err) {
-          console.error('Toggle wishlist error:', err);
-        }
+    async function toggleWishlist() {
+      if (!customerId) {
+        alert('Please log in to add items to your wishlist.');
+        return;
       }
 
-      fetchWishlistStatus();
-    });
+      const formData = new FormData();
+      formData.append('customerId', customerId);
+      formData.append('productId', productId);
+      formData.append('shop', shop);
+      formData.append('_action', wishlisted ? 'DELETE' : 'CREATE');
+
+      try {
+        await fetch(`${appurl}/api/wishlist`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        wishlisted = !wishlisted;
+
+        if (wishlisted) {
+          diamondContentEls.forEach(el => el.classList.remove('hidden'));
+          initTableSelection();
+        } else {
+          diamondContentEls.forEach(el => el.classList.add('hidden'));
+        }
+
+        console.log('Wishlisted:', wishlisted);
+      } catch (err) {
+        console.error('Toggle wishlist error:', err);
+      }
+    }
+
+    addToCartBtn.disabled = true;
+    
+    chooseBtn?.addEventListener('click', toggleWishlist);
+    fetchWishlistStatus();
+  });
 </script>
+
+<div class="media-modal" id="sharedMediaModal">
+  <div class="media-content">
+    <button class="media-close">×</button>
+    <iframe id="mediaPlayer" allowfullscreen></iframe>
+  </div>
+</div>
 
 {% schema %}
 {
