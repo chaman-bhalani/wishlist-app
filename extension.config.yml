@@ -1,0 +1,5 @@
+name: product-extension
+target: online_store
+type: theme
+templates:
+  - product

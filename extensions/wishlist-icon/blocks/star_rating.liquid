@@ -1,36 +1,11 @@
+<!--
+  ------------------------------------------------------------------- CSS -------------------------------------------------------------------
+-->
+
+<!-- table, media-modal and pagination styles -->
 <style>
-  /* Wishlist Button */
-  .wishlist {
-    display: flex;
-    justify-content: center;
-    max-width: 44rem;
-  }
-
-  .wishlist-button {
-    display: flex;
-    align-items: center;
-    background: none;
-    border: none;
-    padding: 0;
-    gap: 6px;
-    cursor: pointer;
-    color: {{ block.settings.colour }};
-  }
-
-  .wishlist-icon {
-    width: 18px;
-    height: 18px;
-    stroke-width: 2;
-    stroke: {{ block.settings.colour }};
-    transition: fill 0.3s ease;
-  }
-
-  .wishlist-text {
-    color: black;
-  }
-  /* Diamond Table */
   .diamond-table {
-    width: 100%;
+    width: 90%;
     border-collapse: collapse;
     margin-top: 2rem;
     font-size: 1.1rem;
@@ -51,72 +26,168 @@
     font-weight: 600;
     color: #333;
   }
+  .diamond-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+    height: 0;
+    margin: 0;
+  }
 
   .diamond-table tbody tr:nth-child(even) {
     background-color: #fafafa;
+  }
+
+  .diamond-table tbody tr {
+    transition: background 0.18s ease, box-shadow 0.18s ease;
+    cursor: pointer;
+  }
+
+  .diamond-table tbody tr:hover {
+    background: #f0f0f0;
+  }
+
+  .diamond-table tbody tr.selected {
+    background: #e2f0ff;
+    box-shadow: inset 0 0 0 2px #3182ce;
   }
 
   .diamond-table td {
     color: #555;
   }
 
-  .col,
-  .media-icons {
+  .col {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
+  .media-icons {
+    display: flex;
+    align-items: center;
+  }
 
-  .icon-toggle-wrapper {
-    position: relative;
-    width: 16px;
-    height: 16px;
+  .media-icons button,
+  .media-icons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .media-icons button:hover,
+  .media-icons a:hover {
+    background: #f5f5f5;
+    border-color: #999;
+  }
+
+  .diamond-icon-static {
     display: inline-block;
+    opacity: 0.85;
   }
-
-  .diamond-checkbox {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    z-index: 2;
-    opacity: 0;
-    pointer-events: none;
-  }
-
   .diamond-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 16px;
-    height: 16px;
-    z-index: 1;
-    transition: opacity 0.2s ease;
+    display: flex;
   }
 
-  .icon-toggle-wrapper:hover .diamond-checkbox {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .icon-toggle-wrapper:hover .diamond-icon {
-    opacity: 0;
-  }
-
-  .diamond-checkbox:checked {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .diamond-checkbox:checked ~ .diamond-icon {
-    opacity: 0;
-  }
-
+  /* Responsive */
   @media (max-width: 768px) {
     .diamond-table {
       font-size: 1rem;
+      width: 100%;
+    }
+  }
+  #diamond-table-wrapper .loading-overlay {
+    position: static;
+    width: 90%;
+    padding: 2rem 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: auto;
+  }
+
+  #diamond-table-wrapper .loading-overlay:not(.hidden) {
+    display: flex;
+  }
+  .spinner:empty {
+    display: inline-block !important;
+  }
+
+  .spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #000;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  #diamond-table-wrapper.loading-active table,
+  #diamond-table-wrapper.loading-active #pagination-wrapper {
+    display: none;
+  }
+  #diamond-table-wrapper.loading-active .loading-overlay {
+    display: flex;
+  }
+
+  /* pagination */
+
+  #pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  #pagination-wrapper button {
+    background-color: #fafafa;
+    text-decoration: underline;
+    border: none;
+    color: #555;
+    font-size: 1.5rem;
+    font-weight: 500;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  #pagination-wrapper button:hover {
+    color: #333;
+  }
+
+  #pagination-wrapper button.active,
+  #pagination-wrapper button[style*='font-weight:bold'] {
+    color: #000;
+    font-weight: 600;
+    border-color: #ccc;
+  }
+
+  #pagination-wrapper button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f9f9f9;
+    color: #aaa;
+    border-color: #ddd;
+  }
+
+  @media (max-width: 480px) {
+    #pagination-wrapper {
+      gap: 0.3rem;
+    }
+
+    #pagination-wrapper button {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.9rem;
     }
   }
 
@@ -168,58 +239,42 @@
   }
 
   .open-media {
+    display: flex;
     background: none;
     border: none;
     cursor: pointer;
     padding: 0;
   }
+  .certificate-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .certificate-media:hover {
+    opacity: 0.8;
+  }
 </style>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('sharedMediaModal');
-    const iframe = document.getElementById('mediaPlayer');
-    const openBtns = document.querySelectorAll('.open-media');
-    const closeBtn = modal.querySelector('.media-close');
-
-    openBtns.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const videoUrl = btn.getAttribute('data-video');
-        if (videoUrl) {
-          iframe.src = videoUrl;
-          modal.classList.add('active');
-        }
-      });
-    });
-
-    closeBtn.addEventListener('click', () => {
-      modal.classList.remove('active');
-      iframe.src = '';
-    });
-
-    window.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.classList.remove('active');
-        iframe.src = '';
-      }
-    });
-  });
-</script>
-
-<div class="wishlist">
-  <button type="button" class="button button--primary button--full-width choose-button" id="choose-button">
-    Choose Your Diamond
-  </button>
-</div>
-
+<!-- filter styles -->
 <style>
   .diamond-dropdowns {
+    width: 90%;
     margin-top: 1rem;
     padding: 10px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 8px;
+  }
+  @media (max-width: 768px) {
+    .diamond-dropdowns {
+      width: 100%;
+    }
   }
 
   .filter-buttons {
@@ -356,535 +411,940 @@
   .range-label {
     font-size: 14px;
   }
+  {% comment %} .filter-buttons .filter-btn:first-child:not(.active) {
+    background-color: #000;
+    color: #fff;
+    border-color: #000;
+  } {% endcomment %}
+  .filter-buttons .filter-btn.force-active {
+    background-color: #000 !important;
+    color: #fff !important;
+    border-color: #000 !important;
+  }
 </style>
 
-<div id="diamond-options" class="diamond-dropdowns hidden diamond-content">
-  <div class="filters-heading">Filters:</div>
-  <div class="filter-buttons">
-    <button type="button" class="filter-btn " data-target="slider-price">Price</button>
-    <button type="button" class="filter-btn" data-target="slider-clarity">Clarity</button>
-    <button type="button" class="filter-btn" data-target="slider-color">Color</button>
-    <button type="button" class="filter-btn" data-target="slider-carat">Carat</button>
+<!-- summary box styles -->
+<style>
+  /* Summary Box Container */
+  #diamond-summary-box {
+    width: 90%;
+    margin-top: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+    position: relative;
+  }
+  @media (max-width: 768px) {
+    #diamond-summary-box {
+      width: 100%;
+    }
+  }
+
+  /* Top Center Header */
+  .summary-box-header {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    padding: 0 10px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+  }
+
+  /* Inner content layout */
+  .summary-box-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1.5rem 1rem;
+  }
+
+  /* Left Section */
+  .summary-box-content .left {
+    flex: 1;
+  }
+
+  .diamond-info-text,
+  .diamond-certificate {
+    font-size: 14px;
+    color: #333;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .diamond-price {
+    font-weight: 400;
+    font-size: 14px;
+    color: #000;
+  }
+
+  /* Certificate link */
+  .diamond-certificate a {
+    color: #007acc;
+    text-decoration: underline;
+    font-size: 14px;
+  }
+
+  /* Buttons - Base style */
+  .summary-box-content .btn {
+    background: none;
+    color: black;
+    text-decoration: underline;
+    border: none;
+    font-size: 14px;
+    padding: 0;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  /* Right Section */
+  .summary-box-content .right {
+    position: relative;
+    width: 130px;
+    text-align: center;
+    display: flex;
+  }
+
+  /* Diamond image */
+  .summary-box-content .right img {
+    margin: auto;
+    width: 110px;
+    height: 110px;
+  }
+
+  /* See Diamond Button - Overlay */
+  #see-diamond-btn {
+    position: absolute;
+    top: 4%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.36);
+    color: #fff;
+    font-size: 12px;
+    padding: 36px 24px;
+    border-radius: 4px;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Show button on hover */
+  .summary-box-content .right:hover #see-diamond-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .cert-link {
+    color: black;
+  }
+</style>
+<!--
+  ------------------------------------------------------------------- HTML -------------------------------------------------------------------
+-->
+{% if product.tags contains '_Diamond_selector' %}
+  <!-- filter -->
+  <div id="diamond-options" class="diamond-dropdowns diamond-content">
+    <div class="filters-heading">Filters:</div>
+    <div class="filter-buttons">
+      <button class="filter-btn active" data-target="slider-price">Price</button>
+      <button type="button" class="filter-btn" data-target="slider-clarity">Clarity</button>
+      <button type="button" class="filter-btn" data-target="slider-color">Color</button>
+      <button type="button" class="filter-btn" data-target="slider-carat">Carat</button>
+    </div>
+
+    <div class="sliders-wrapper">
+      <div class="slider-container " id="slider-price">
+        <label class="range-label">Price Range ($):</label>
+        <div class="slider-wrapper">
+          <div class="slider-track">
+            <div class="slider-range" id="track-price"></div>
+          </div>
+          <input type="range" id="priceMin" min="0" max="20000" value="0" step="100">
+          <input type="range" id="priceMax" min="0" max="20000" value="10000" step="100">
+        </div>
+        <div class="input-pair">
+          <input type="number" id="priceMinInput" value="0">
+          <input type="number" id="priceMaxInput" value="20000">
+        </div>
+      </div>
+
+      <div class="slider-container hidden" id="slider-clarity">
+        <label class="range-label">Clarity Level:</label>
+        <div class="slider-wrapper">
+          <div class="slider-track">
+            <div class="slider-range" id="track-clarity"></div>
+          </div>
+          <input type="range" id="clarityMin" min="1" max="8" value="2" step="1">
+          <input type="range" id="clarityMax" min="1" max="8" value="6" step="1">
+        </div>
+        <div class="slider-labels">
+          <span>SI2</span>
+          <span>SI1</span>
+          <span>VS2</span>
+          <span>VS1</span>
+          <span>VVS2</span>
+          <span>VVS1</span>
+          <span>IF</span>
+          <span>FL</span>
+        </div>
+      </div>
+
+      <div class="slider-container hidden" id="slider-color">
+        <label class="range-label">Color Grade:</label>
+        <div class="slider-wrapper">
+          <div class="slider-track">
+            <div class="slider-range" id="track-color"></div>
+          </div>
+          <input type="range" id="colorMin" min="1" max="7" value="2" step="1">
+          <input type="range" id="colorMax" min="1" max="7" value="5" step="1">
+        </div>
+        <div class="slider-labels">
+          <span>J</span>
+          <span>I</span>
+          <span>H</span>
+          <span>G</span>
+          <span>F</span>
+          <span>E</span>
+          <span>D</span>
+        </div>
+      </div>
+
+      <div class="slider-container hidden" id="slider-carat">
+        <label class="range-label">Carat Range (ct):</label>
+        <div class="slider-wrapper">
+          <div class="slider-track">
+            <div class="slider-range" id="track-carat"></div>
+          </div>
+          <input type="range" id="caratMin" min="0.3" max="5.0" step="0.1" value="0.5">
+          <input type="range" id="caratMax" min="0.3" max="5.0" step="0.1" value="2.0">
+        </div>
+        <div class="input-pair">
+          <input type="number" id="caratMinInput" step="0.1" value="0.5">
+          <input type="number" id="caratMaxInput" step="0.1" value="2.0">
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="sliders-wrapper">
-    <div class="slider-container hidden" id="slider-price">
-      <label class="range-label">Price Range ($):</label>
-      <div class="slider-wrapper">
-        <div class="slider-track">
-          <div class="slider-range" id="track-price"></div>
-        </div>
-        <input type="range" id="priceMin" min="100" max="20000" value="500" step="100">
-        <input type="range" id="priceMax" min="100" max="20000" value="10000" step="100">
-      </div>
-      <div class="input-pair">
-        <input type="number" id="priceMinInput" value="500">
-        <input type="number" id="priceMaxInput" value="10000">
-      </div>
+  <!-- Table -->
+  <div id="diamond-table-wrapper" class="hidden diamond-content">
+    <div id="diamond-table-loader" class="loading-overlay hidden">
+      <div class="spinner"></div>
     </div>
 
-    <div class="slider-container hidden" id="slider-clarity">
-      <label class="range-label">Clarity Level:</label>
-      <div class="slider-wrapper">
-        <div class="slider-track">
-          <div class="slider-range" id="track-clarity"></div>
-        </div>
-        <input type="range" id="clarityMin" min="1" max="8" value="2" step="1">
-        <input type="range" id="clarityMax" min="1" max="8" value="6" step="1">
-      </div>
-      <div class="slider-labels">
-        <span>SI2</span>
-        <span>SI1</span>
-        <span>VS2</span>
-        <span>VS1</span>
-        <span>VVS2</span>
-        <span>VVS1</span>
-        <span>IF</span>
-        <span>FL</span>
-      </div>
-    </div>
+    <table class="diamond-table">
+      <thead>
+        <tr>
+          <th>Origin</th>
+          <th>Carat</th>
+          <th>Color</th>
+          <th>Clarity</th>
+          <th>Media</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-    <div class="slider-container hidden" id="slider-color">
-      <label class="range-label">Color Grade:</label>
-      <div class="slider-wrapper">
-        <div class="slider-track">
-          <div class="slider-range" id="track-color"></div>
-        </div>
-        <input type="range" id="colorMin" min="1" max="7" value="2" step="1">
-        <input type="range" id="colorMax" min="1" max="7" value="5" step="1">
-      </div>
-      <div class="slider-labels">
-        <span>J</span>
-        <span>I</span>
-        <span>H</span>
-        <span>G</span>
-        <span>F</span>
-        <span>E</span>
-        <span>D</span>
-      </div>
-    </div>
+    <div id="pagination-wrapper" class="pagination" style="margin-top: 1rem; text-align: center;"></div>
+  </div>
 
-    <div class="slider-container hidden" id="slider-carat">
-      <label class="range-label">Carat Range (ct):</label>
-      <div class="slider-wrapper">
-        <div class="slider-track">
-          <div class="slider-range" id="track-carat"></div>
-        </div>
-        <input type="range" id="caratMin" min="0.3" max="5.0" step="0.1" value="0.5">
-        <input type="range" id="caratMax" min="0.3" max="5.0" step="0.1" value="2.0">
+  <!-- media modal -->
+  <div class="media-modal" id="sharedMediaModal">
+    <div class="media-content">
+      <button class="media-close">×</button>
+      <iframe id="mediaPlayer" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Diamond Summary Box (initially hidden) -->
+  <div id="diamond-summary-box" class="hidden">
+    <div class="summary-box-header">Selected Diamond</div>
+    <div class="summary-box-content">
+      <div class="left">
+        <div class="diamond-info-text"></div>
+        <div class="diamond-price"></div>
+        <button id="change-diamond-btn" class="btn">Change</button>
       </div>
-      <div class="input-pair">
-        <input type="number" id="caratMinInput" step="0.1" value="0.5">
-        <input type="number" id="caratMaxInput" step="0.1" value="2.0">
+      <div class="right">
+        <img src="{{ 'diamond-round.svg' | asset_url }}" alt="Diamond" width="110" height="110">
+        <button id="see-diamond-btn" class="btn">See Diamond</button>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    const sliderContainers = document.querySelectorAll('.slider-container');
+  <!--
+    ------------------------------------------------------------------- SCRIPT -------------------------------------------------------------------
+  -->
 
-    filterButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-target');
+  {% comment %}
+    {% if template == 'product' %}
+      <script type="module" src="{{ 'diamond-selector.js' | asset_url }}" defer></script>
+    {% endif %}
+  {% endcomment %}
 
-        sliderContainers.forEach((container) => {
-          container.id === target ? container.classList.remove('hidden') : container.classList.add('hidden');
-        });
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const addToCartButton = document.querySelector('button[name="add"]');
+      const acceleratedCheckoutButton = document.querySelector('.shopify-payment-button__button');
+      const productFormEl = document.querySelector('form[action^="/cart/add"]');
+      const variantIdInputEl = productFormEl?.querySelector('input[name="id"]');
+      const diamondContentSections = document.querySelectorAll('.diamond-content');
+      const diamondTableWrapperEl = document.getElementById('diamond-table-wrapper');
+      const diamondSummaryBoxEl = document.getElementById('diamond-summary-box');
+      const diamondInfoTextEl = document.querySelector('.diamond-info-text');
+      const diamondPriceTextEl = document.querySelector('.diamond-price');
+      const changeDiamondButton = document.getElementById('change-diamond-btn');
+      const paginationWrapperEl = document.getElementById('pagination-wrapper');
+      const diamondTableLoaderEl = document.getElementById('diamond-table-loader');
 
-        filterButtons.forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
+      if (acceleratedCheckoutButton) acceleratedCheckoutButton.style.display = 'none';
 
-    function setupSlider(minId, maxId, trackId, inputMinId = null, inputMaxId = null) {
-      const minEl = document.getElementById(minId);
-      const maxEl = document.getElementById(maxId);
-      const trackEl = document.getElementById(trackId);
-      const inputMin = inputMinId ? document.getElementById(inputMinId) : null;
-      const inputMax = inputMaxId ? document.getElementById(inputMaxId) : null;
+      const CLARITY_LEVELS = ['SI2', 'SI1', 'VS2', 'VS1', 'VVS2', 'VVS1', 'IF', 'FL'];
+      const COLOR_GRADES = ['J', 'I', 'H', 'G', 'F', 'E', 'D'];
+      const storeHandle = 'dev-by-chaman';
+      const ATC_LOADING_TEXT = 'Adding your diamond...';
 
-      function updateTrack() {
-        const min = parseFloat(minEl.value);
-        const max = parseFloat(maxEl.value);
-        const minLimit = parseFloat(minEl.min);
-        const maxLimit = parseFloat(maxEl.max);
-        const range = maxLimit - minLimit;
+      let filtersAreVisible = false;
+      let selectedDiamondData = null;
+      let currentPageNumber = 1;
 
-        const left = ((min - minLimit) / range) * 100;
-        const right = ((max - minLimit) / range) * 100;
+      const baseProductPrice = (() => {
+        const btnAttr = parseFloat(addToCartButton?.dataset.basePrice || 'NaN');
+        if (!isNaN(btnAttr)) return btnAttr;
+        const liquidVal = parseFloat('{{ product.price | money_without_currency | remove: "," }}' || '0');
+        return isNaN(liquidVal) ? 0 : liquidVal;
+      })();
 
-        trackEl.style.left = `${left}%`;
-        trackEl.style.right = `${100 - right}%`;
+      function showDiamondTableLoading() {
+        if (diamondTableLoaderEl) {
+          diamondTableLoaderEl.classList.remove('hidden');
+        }
+        if (diamondTableWrapperEl) {
+          diamondTableWrapperEl.classList.add('loading-active');
+        }
       }
 
-      function syncInputs() {
-        if (inputMin) inputMin.value = minEl.value;
-        if (inputMax) inputMax.value = maxEl.value;
-        updateTrack();
+      function hideDiamondTableLoading() {
+        if (diamondTableLoaderEl) {
+          diamondTableLoaderEl.classList.add('hidden');
+        }
+        if (diamondTableWrapperEl) {
+          diamondTableWrapperEl.classList.remove('loading-active');
+        }
       }
 
-      minEl.addEventListener('input', () => {
-        if (+minEl.value > +maxEl.value) minEl.value = maxEl.value;
-        syncInputs();
-      });
+      let atcRestoreMarkup = null;
 
-      maxEl.addEventListener('input', () => {
-        if (+maxEl.value < +minEl.value) maxEl.value = minEl.value;
-        syncInputs();
-      });
-
-      if (inputMin && inputMax) {
-        inputMin.addEventListener('input', () => {
-          minEl.value = inputMin.value;
-          syncInputs();
-        });
-        inputMax.addEventListener('input', () => {
-          maxEl.value = inputMax.value;
-          syncInputs();
-        });
+      function startAtcLoading() {
+        if (!addToCartButton) return;
+        atcRestoreMarkup = addToCartButton.innerHTML;
+        addToCartButton.classList.add('add-btn-loading');
+        addToCartButton.disabled = true;
+        addToCartButton.innerHTML = `
+        <span class="btn-label">${ATC_LOADING_TEXT}</span>
+        <span class="btn-spinner" aria-hidden="true"></span>
+      `;
       }
 
-      syncInputs();
-    }
+      function stopAtcLoadingRestore() {
+        if (!addToCartButton) return;
+        addToCartButton.classList.remove('add-btn-loading');
+        addToCartButton.disabled = false;
+        if (atcRestoreMarkup != null) {
+          addToCartButton.innerHTML = atcRestoreMarkup;
+        }
+        atcRestoreMarkup = null;
+        updateAddToCartButtonLabel();
+      }
 
-    // Initialize all sliders
-    setupSlider('priceMin', 'priceMax', 'track-price', 'priceMinInput', 'priceMaxInput');
-    setupSlider('caratMin', 'caratMax', 'track-carat', 'caratMinInput', 'caratMaxInput');
-    setupSlider('clarityMin', 'clarityMax', 'track-clarity');
-    setupSlider('colorMin', 'colorMax', 'track-color');
-  });
-</script>
+      function hideElements(nodeList) {
+        nodeList.forEach((el) => el.classList.add('hidden'));
+      }
+      function showElements(nodeList) {
+        nodeList.forEach((el) => el.classList.remove('hidden'));
+      }
 
-<!-- Table -->
-<div id="diamond-table-wrapper" class="hidden diamond-content">
-  <table class="diamond-table">
-    <!-- Table Header -->
-    <thead>
-      <tr>
-        <th>Origin</th>
-        <th>Carat</th>
-        <th>Color</th>
-        <th>Clarity</th>
-        <th>Media</th>
-        <th>Price</th>
-      </tr>
-    </thead>
-    <!-- Row-1 -->
-    <tbody>
-      <tr>
-        <td>
-          <span class="col">
-            <span class="icon-toggle-wrapper">
-              <input type="checkbox" class="diamond-checkbox">
-              <img
-                class="diamond-icon"
-                src="{{ 'diamond-round.svg' | asset_url }}"
-                alt="Diamond icon"
-                width="16"
-                height="16"
-              >
+      function getFilterValuesObj() {
+        const clarityMinIndex = (+document.getElementById('clarityMin')?.value || 1) - 1;
+        const clarityMaxIndex = (+document.getElementById('clarityMax')?.value || CLARITY_LEVELS.length) - 1;
+        const colorMinIndex = (+document.getElementById('colorMin')?.value || 1) - 1;
+        const colorMaxIndex = (+document.getElementById('colorMax')?.value || COLOR_GRADES.length) - 1;
+        const selectedClarity = CLARITY_LEVELS.slice(
+          Math.min(clarityMinIndex, clarityMaxIndex),
+          Math.max(clarityMinIndex, clarityMaxIndex) + 1
+        ).join(',');
+        const selectedColor = COLOR_GRADES.slice(
+          Math.min(colorMinIndex, colorMaxIndex),
+          Math.max(colorMinIndex, colorMaxIndex) + 1
+        ).join(',');
+        return {
+          price: {
+            min: document.getElementById('priceMin')?.value ?? '',
+            max: document.getElementById('priceMax')?.value ?? '',
+          },
+          carat: {
+            min: document.getElementById('caratMin')?.value ?? '',
+            max: document.getElementById('caratMax')?.value ?? '',
+          },
+          clarity: selectedClarity,
+          color: selectedColor,
+        };
+      }
+
+      function updateAddToCartButtonLabel() {
+        if (!addToCartButton) return;
+        if (selectedDiamondData) {
+          const diamondPrice = parseFloat(selectedDiamondData.price || 0);
+          addToCartButton.textContent = `Add to cart – ₹${(baseProductPrice + diamondPrice).toLocaleString('en-IN')}`;
+          addToCartButton.disabled = false;
+        } else {
+          addToCartButton.textContent = filtersAreVisible ? 'Please select a diamond' : 'Choose your diamond';
+          addToCartButton.disabled = filtersAreVisible;
+        }
+      }
+
+      function updateAddToCartButtonState() {
+        if (!addToCartButton) return;
+        const hasSelection = !!document.querySelector('.diamond-checkbox:checked');
+        if (filtersAreVisible) addToCartButton.disabled = !hasSelection;
+      }
+
+      function getSelectedDiamondData() {
+        const selectedRow = document.querySelector('.diamond-checkbox:checked')?.closest('tr');
+        if (!selectedRow) return null;
+        const certNumber = selectedRow.getAttribute('data-cert');
+        return window.fetchedDiamonds?.find((d) => String(d.certificate_number) === String(certNumber)) || null;
+      }
+
+      function toggleDiamondSummaryDisplay() {
+        if (selectedDiamondData) {
+          const shape = selectedDiamondData.shape
+            ? selectedDiamondData.shape.charAt(0).toUpperCase() + selectedDiamondData.shape.slice(1).toLowerCase()
+            : 'Diamond';
+          const priceFormatted = `₹${(+selectedDiamondData.price || 0).toLocaleString('en-IN')}`;
+          if (diamondInfoTextEl) {
+            diamondInfoTextEl.innerHTML = `
+            ${shape} ${selectedDiamondData.carat}ct, ${selectedDiamondData.color}, ${selectedDiamondData.clarity}<br>
+            Certificate: <a href="https://www.igi.org/verify-your-report/?r=${selectedDiamondData.certificate_number}" target="_blank" rel="noopener noreferrer" class="cert-link">${selectedDiamondData.certificate_number}</a>
+          `;
+          }
+          if (diamondPriceTextEl) diamondPriceTextEl.textContent = priceFormatted;
+          const seeDiamondBtn = document.getElementById('see-diamond-btn');
+          if (seeDiamondBtn) {
+            const vid = selectedDiamondData.video_link || selectedDiamondData.video_source || '';
+            seeDiamondBtn.setAttribute('data-video', vid);
+          }
+          hideElements(diamondContentSections);
+          if (diamondTableWrapperEl) diamondTableWrapperEl.classList.add('hidden');
+          if (diamondSummaryBoxEl) diamondSummaryBoxEl.classList.remove('hidden');
+        } else {
+          if (diamondTableWrapperEl) diamondTableWrapperEl.classList.remove('hidden');
+          showElements(diamondContentSections);
+          if (diamondSummaryBoxEl) diamondSummaryBoxEl.classList.add('hidden');
+        }
+      }
+
+      function debounceFn(fn, delay) {
+        let to;
+        return (...args) => {
+          clearTimeout(to);
+          to = setTimeout(() => fn.apply(this, args), delay);
+        };
+      }
+
+      async function fetchDiamondDataFromApi(filters, page = 1, storeId) {
+        const qs =
+          `price_min=${encodeURIComponent(filters.price.min)}` +
+          `&price_max=${encodeURIComponent(filters.price.max)}` +
+          `&carat_min=${encodeURIComponent(filters.carat.min)}` +
+          `&carat_max=${encodeURIComponent(filters.carat.max)}` +
+          `&clarity=${encodeURIComponent(filters.clarity)}` +
+          `&color=${encodeURIComponent(filters.color)}` +
+          `&shape=Round` +
+          `&page=${encodeURIComponent(page)}` +
+          `&store_id=${encodeURIComponent(storeId)}`;
+        const url = `https://possibilities-agenda-drops-remedies.trycloudflare.com/api/diamonds?${qs}`;
+        console.log('fetchDiamondData url:', url);
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('Failed to fetch diamond data');
+          const data = await res.json();
+          return {
+            diamonds: Array.isArray(data?.data?.diamonds) ? data.data.diamonds : [],
+            pagination: data?.data?.pagination || { currentPage: 1, totalPages: 1 },
+          };
+        } catch (err) {
+          console.error('API fetch error:', err);
+          return { diamonds: [], pagination: { currentPage: 1, totalPages: 1 } };
+        }
+      }
+
+      function renderDiamondTableHtml(diamonds) {
+        if (!diamondTableWrapperEl) return;
+        const tbody = diamondTableWrapperEl.querySelector('tbody');
+        if (!tbody) {
+          console.error('No <tbody> found inside #diamond-table-wrapper');
+          return;
+        }
+        tbody.innerHTML = '';
+        if (!diamonds.length) {
+          const row = document.createElement('tr');
+          row.className = 'tbl-row';
+          row.innerHTML = `<td colspan="6" style="text-align:center;">No diamonds found.</td>`;
+          tbody.appendChild(row);
+          document.dispatchEvent(new CustomEvent('diamond:rendered'));
+          return;
+        }
+        diamonds.forEach((d) => {
+          const row = document.createElement('tr');
+          row.className = 'tbl-row';
+          if (d.certificate_number) row.setAttribute('data-cert', d.certificate_number);
+          const origin = d.type ? d.type.charAt(0).toUpperCase() + d.type.slice(1).toLowerCase() : 'N/A';
+          row.innerHTML = `
+          <td>
+            <span class="col">
+              <span class="icon-toggle-wrapper">
+                <input type="checkbox" class="diamond-checkbox" />
+                <img
+                  class="diamond-icon"
+                  src="{{ 'diamond-round.svg' | asset_url }}"
+                  alt="Diamond icon"
+                  width="16"
+                  height="16"
+                >
+              </span>
+              ${origin || 'N/A'}
             </span>
-            Mined
-          </span>
-        </td>
-        <td>2</td>
-        <td>G–H</td>
-        <td>VS2</td>
-        <td>
-          <span class="media-icons">
-            <!-- Video Icon -->
-            <button
-              type="button"
-              class="open-media video-trigger"
-              data-video="https://app.unbridaled.ai/360player?url=https://unbridaled-prod.s3.amazonaws.com/das/uploads/v360/frames/UB214EC21840&width=100%25&height=100%25&animate=true&noCache=true&image_ext=png"
-              aria-label="Open video"
-            >
-              <svg
-                class="icon-video"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="15"
-                height="15"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
-              </svg>
-            </button>
-            <!-- Document Icon -->
-            <button
-              type="button"
-              class="open-media"
-              data-video="https://cdn.shopify.com/s/files/1/0942/5977/3745/files/Document_from_Chaman_-_Sheet1.pdf?v=1752228528"
-              aria-label="Open video"
-            >
-              <svg
-                class="icon-document"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="15"
-                height="15"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="8" y1="13" x2="16" y2="13" />
-                <line x1="8" y1="17" x2="16" y2="17" />
-                <line x1="8" y1="9" x2="12" y2="9" />
-              </svg>
-            </button>
-          </span>
-        </td>
-        <td>
-          <span class="col">
-            $4,500
-            <!-- Arrow Icon -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </span>
-        </td>
-      </tr>
-
-      <!-- Row-2 -->
-      <tr>
-        <td>
-          <span class="col">
-            <span class="icon-toggle-wrapper">
-              <input type="checkbox" class="diamond-checkbox">
-              <img
-                class="diamond-icon"
-                src="{{ 'diamond-round.svg' | asset_url }}"
-                alt="Diamond icon"
-                width="16"
-                height="16"
-              >
+          </td>
+          <td>${d.carat ?? ''}</td>
+          <td>${d.color ?? ''}</td>
+          <td>${d.clarity ?? ''}</td>
+          <td>
+            <span class="media-icons">
+              ${
+                d.video_source
+                  ? `<button class="open-media video-trigger" data-video="${d.video_source}">
+                       <svg class="icon-video" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                         <circle cx="12" cy="12" r="10" />
+                         <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+                       </svg>
+                     </button>`
+                  : ''
+              }
+              ${
+                d.certificate_number
+                  ? `<a class="certificate-media" target="_blank" rel="noopener noreferrer"
+                       href="https://www.igi.org/verify-your-report/?r=${d.certificate_number}">
+                       <svg class="icon-document" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                         <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
+                         <polyline points="14 2 14 8 20 8" />
+                         <line x1="8"  y1="13" x2="16" y2="13" />
+                         <line x1="8"  y1="17" x2="16" y2="17" />
+                         <line x1="8"  y1="9"  x2="12" y2="9"  />
+                       </svg>
+                     </a>`
+                  : ''
+              }
             </span>
-            Lab Grown
-          </span>
-        </td>
-        <td>2</td>
-        <td>D–F</td>
-        <td>V</td>
-        <td>
-          <span class="media-icons">
-            <button
-              type="button"
-              class="open-media video-trigger"
-              data-video="https://app.unbridaled.ai/360player?url=https://unbridaled-prod.s3.amazonaws.com/das/uploads/v360/frames/UB214EC21840&width=100%25&height=100%25&animate=true&noCache=true&image_ext=png"
-              aria-label="Open video"
-            >
-              <svg
-                class="icon-video"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="15"
-                height="15"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none" />
+          </td>
+          <td>
+            <span class="col">
+              $${d.price ?? ''}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                   width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"
+                   stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
               </svg>
-            </button>
-            <button
-              type="button"
-              class="open-media"
-              data-video="https://cdn.shopify.com/s/files/1/0942/5977/3745/files/Document_from_Chaman_-_Sheet1.pdf?v=1752228528"
-              aria-label="Open video"
-            >
-              <svg
-                class="icon-document"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                width="15"
-                height="15"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="8" y1="13" x2="16" y2="13" />
-                <line x1="8" y1="17" x2="16" y2="17" />
-                <line x1="8" y1="9" x2="12" y2="9" />
-              </svg>
-            </button>
-          </span>
-        </td>
-        <td>
-          <span class="col">
-            $1,800
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              width="15"
-              height="15"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </span>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const chooseBtn = document.getElementById('choose-button');
-    const diamondContentEls = document.querySelectorAll('.diamond-content');
-    const addToCartBtn = document.querySelector('button[name="add"]');
-    const customerId = {{ customer.id | json }};
-    const productId = '{{ product.id }}';
-    const shop = '{{ shop.permanent_domain }}';
-    const appurl = 'https://yields-moon-cleaners-groups.trycloudflare.com/';
-    let wishlisted = false;
-    const checkboxes = document.querySelectorAll('.diamond-checkbox');
-    const rows = document.querySelectorAll('.diamond-table tbody tr');
-
-    function updateAddButtonState() {
-      const isChecked = document.querySelector('.diamond-checkbox:checked') !== null;
-      addToCartBtn.disabled = !isChecked;
-    }
-
-    function initTableSelection() {
-      rows.forEach(row => {
-        row.addEventListener('mouseenter', () => {
-          const checkbox = row.querySelector('.diamond-checkbox');
-          checkbox.style.opacity = '1';
+            </span>
+          </td>
+        `;
+          tbody.appendChild(row);
         });
-        
-        row.addEventListener('mouseleave', () => {
-          const checkbox = row.querySelector('.diamond-checkbox');
-          if (!checkbox.checked) {
-            checkbox.style.opacity = '0';
+        diamondTableWrapperEl.classList.remove('hidden');
+        document.dispatchEvent(new CustomEvent('diamond:rendered'));
+      }
+
+      function renderPaginationControls(pagination) {
+        if (!paginationWrapperEl) return;
+        const { currentPage, totalPages } = pagination;
+        if (totalPages <= 1) {
+          paginationWrapperEl.innerHTML = '';
+          return;
+        }
+        let html = '';
+        if (currentPage > 1) html += `<button data-page="${currentPage - 1}">&laquo; Prev</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button data-page="${i}" ${i === currentPage ? 'style="font-weight:600;"' : ''}>${i}</button>`;
+        }
+        if (currentPage < totalPages) html += `<button data-page="${currentPage + 1}">Next &raquo;</button>`;
+        paginationWrapperEl.innerHTML = html;
+      }
+
+      function clearAllDiamondSelections(exceptCheckbox) {
+        document.querySelectorAll('.diamond-checkbox').forEach((cb) => {
+          if (cb !== exceptCheckbox) {
+            cb.checked = false;
+            cb.closest('tr')?.classList.remove('checked');
           }
         });
-        
-        row.addEventListener('click', (e) => {
-          if (e.target.closest('.open-media') || e.target.tagName === 'A') {
+      }
+
+      function syncRowSelectionFromCheckbox(cb) {
+        const row = cb.closest('tr');
+        if (!row) return;
+        row.classList.toggle('checked', cb.checked);
+      }
+
+      function handleSelectionChanged() {
+        selectedDiamondData = getSelectedDiamondData();
+        toggleDiamondSummaryDisplay();
+        updateAddToCartButtonLabel();
+        updateAddToCartButtonState();
+      }
+
+      function bindDiamondTableDelegates() {
+        if (!diamondTableWrapperEl || diamondTableWrapperEl.dataset.selectionBound === 'true') return;
+        diamondTableWrapperEl.dataset.selectionBound = 'true';
+        diamondTableWrapperEl.addEventListener('change', (e) => {
+          const cb = e.target.closest('.diamond-checkbox');
+          if (!cb) return;
+          clearAllDiamondSelections(cb);
+          syncRowSelectionFromCheckbox(cb);
+          handleSelectionChanged();
+        });
+        diamondTableWrapperEl.addEventListener('click', (e) => {
+          if (e.target.closest('.open-media') || e.target.closest('a')) return;
+          const row = e.target.closest('tr');
+          if (!row) return;
+          const cb = row.querySelector('.diamond-checkbox');
+          if (!cb) return;
+          cb.checked = !cb.checked;
+          clearAllDiamondSelections(cb);
+          syncRowSelectionFromCheckbox(cb);
+          handleSelectionChanged();
+        });
+      }
+
+      function initFilterTabsAndSlidersUI() {
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const sliderContainers = document.querySelectorAll('.slider-container');
+        filterButtons.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+            sliderContainers.forEach((container) => {
+              container.classList.toggle('hidden', container.id !== target);
+            });
+            filterButtons.forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+          });
+        });
+        function setupSlider(minId, maxId, trackId, inputMinId = null, inputMaxId = null) {
+          const minEl = document.getElementById(minId);
+          const maxEl = document.getElementById(maxId);
+          const trackEl = document.getElementById(trackId);
+          const inputMin = inputMinId ? document.getElementById(inputMinId) : null;
+          const inputMax = inputMaxId ? document.getElementById(inputMaxId) : null;
+          if (!minEl || !maxEl || !trackEl) return;
+          function updateTrack() {
+            const min = parseFloat(minEl.value);
+            const max = parseFloat(maxEl.value);
+            const minLimit = parseFloat(minEl.min);
+            const maxLimit = parseFloat(maxEl.max);
+            const range = maxLimit - minLimit;
+            const leftPct = ((min - minLimit) / range) * 100;
+            const rightPct = ((max - minLimit) / range) * 100;
+            trackEl.style.left = `${leftPct}%`;
+            trackEl.style.right = `${100 - rightPct}%`;
+          }
+          function syncInputs() {
+            if (inputMin) inputMin.value = minEl.value;
+            if (inputMax) inputMax.value = maxEl.value;
+            updateTrack();
+          }
+          minEl.addEventListener('input', () => {
+            if (+minEl.value > +maxEl.value) minEl.value = maxEl.value;
+            syncInputs();
+          });
+          maxEl.addEventListener('input', () => {
+            if (+maxEl.value < +minEl.value) maxEl.value = minEl.value;
+            syncInputs();
+          });
+          if (inputMin && inputMax) {
+            inputMin.addEventListener('input', () => {
+              minEl.value = inputMin.value;
+              syncInputs();
+            });
+            inputMax.addEventListener('input', () => {
+              maxEl.value = inputMax.value;
+              syncInputs();
+            });
+          }
+          syncInputs();
+        }
+        setupSlider('priceMin', 'priceMax', 'track-price', 'priceMinInput', 'priceMaxInput');
+        setupSlider('caratMin', 'caratMax', 'track-carat', 'caratMinInput', 'caratMaxInput');
+        setupSlider('clarityMin', 'clarityMax', 'track-clarity');
+        setupSlider('colorMin', 'colorMax', 'track-color');
+      }
+
+      async function loadDiamondsPage(page = 1) {
+        currentPageNumber = page;
+        showDiamondTableLoading();
+        const filters = getFilterValuesObj();
+        const { diamonds, pagination } = await fetchDiamondDataFromApi(filters, page, storeHandle);
+        window.fetchedDiamonds = diamonds;
+        console.log('Fetched diamonds:', diamonds);
+        hideDiamondTableLoading();
+        renderDiamondTableHtml(diamonds);
+        renderPaginationControls(pagination);
+        updateAddToCartButtonState();
+        bindDiamondTableDelegates();
+      }
+
+      async function initDiamondFilterData() {
+        await loadDiamondsPage(1);
+        if (paginationWrapperEl && !paginationWrapperEl.dataset.bound) {
+          paginationWrapperEl.dataset.bound = 'true';
+          paginationWrapperEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-page]');
+            if (!btn) return;
+            const page = parseInt(btn.getAttribute('data-page'), 10);
+            if (!page) return;
+            loadDiamondsPage(page);
+          });
+        }
+        const reactiveIds = [
+          'priceMin',
+          'priceMax',
+          'caratMin',
+          'caratMax',
+          'clarityMin',
+          'clarityMax',
+          'colorMin',
+          'colorMax',
+        ];
+        const debouncedReload = debounceFn(() => loadDiamondsPage(1), 300);
+        reactiveIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) el.addEventListener('input', debouncedReload);
+        });
+      }
+
+      window.initDiamondFilter = initDiamondFilterData;
+
+      (function initMediaPreview() {
+        const modal = document.getElementById('sharedMediaModal');
+        const iframe = document.getElementById('mediaPlayer');
+        const closeBtn = modal?.querySelector('.media-close');
+        document.addEventListener('click', (e) => {
+          const btn = e.target.closest('.open-media,#see-diamond-btn');
+          if (!btn) return;
+          const videoUrl = btn.getAttribute('data-video');
+          if (videoUrl) {
+            if (iframe) iframe.src = videoUrl;
+            if (modal) modal.classList.add('active');
+          } else {
+            alert('Video not available for this diamond.');
+          }
+        });
+        closeBtn?.addEventListener('click', () => {
+          if (modal) modal.classList.remove('active');
+          if (iframe) iframe.src = '';
+        });
+        modal?.addEventListener('click', (e) => {
+          if (e.target === modal) closeBtn?.click();
+        });
+      })();
+
+      function mapDiamondForProxy(diamond) {
+        return {
+          caratWeight: String(diamond.carat ?? ''),
+          color: diamond.color ?? '',
+          clarity: diamond.clarity ?? '',
+          shape: diamond.shape ?? 'Round',
+          lab: diamond.lab ?? 'IGI',
+          type: diamond.type ?? 'Natural',
+          certificateNumber: diamond.certificate_number ?? '',
+          price: String(diamond.price ?? '0.00'),
+          images: [diamond.image || diamond.image_url || ''].filter(Boolean),
+        };
+      }
+
+      async function createProductProxy(diamondPayload) {
+        const proxyURL = 'https://dev-by-chaman.myshopify.com/apps/diamond-selector/app/settings';
+        try {
+          const res = await fetch(proxyURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(diamondPayload),
+          });
+          if (!res.ok) {
+            const errText = await res.text();
+            throw new Error(`Diamond product create failed (${res.status}): ${errText}`);
+          }
+          const data = await res.json();
+          console.log('Diamond product create response:', data);
+          return data;
+        } catch (err) {
+          console.error('createProductProxy error:', err);
+          return null;
+        }
+      }
+
+      function extractVariantIdFromCreateResponse(data) {
+        if (data?.variant?.variantId) return String(data.variant.variantId);
+        const node = data?.product?.variants?.nodes?.[0];
+        if (!node) return null;
+        if (node.legacyResourceId) return String(node.legacyResourceId);
+        if (node.id && typeof node.id === 'string') {
+          const parts = node.id.split('/');
+          return parts[parts.length - 1] || null;
+        }
+        return null;
+      }
+
+      window.createProduct = createProductProxy;
+
+      if (changeDiamondButton) {
+        changeDiamondButton.addEventListener('click', () => {
+          selectedDiamondData = null;
+          toggleDiamondSummaryDisplay();
+          updateAddToCartButtonLabel();
+          updateAddToCartButtonState();
+        });
+      }
+
+      if (addToCartButton) {
+        addToCartButton.addEventListener('click', async (e) => {
+          e.preventDefault();
+
+          if (!filtersAreVisible) {
+            showElements(diamondContentSections);
+            if (diamondTableWrapperEl) diamondTableWrapperEl.classList.remove('hidden');
+            showDiamondTableLoading();
+            filtersAreVisible = true;
+            addToCartButton.disabled = true;
+            if (!window.fetchedDiamonds) await initDiamondFilterData();
+            hideDiamondTableLoading();
+            updateAddToCartButtonLabel();
+            updateAddToCartButtonState();
             return;
           }
-          
-          const checkbox = row.querySelector('.diamond-checkbox');
-          
-          checkboxes.forEach(cb => {
-            if (cb !== checkbox) {
-              cb.checked = false;
-              cb.closest('tr').classList.remove('checked');
-              cb.style.opacity = '0';
-            }
-          });
-          
-          checkbox.checked = !checkbox.checked;
-          
-          if (checkbox.checked) {
-            row.classList.add('checked');
-            checkbox.style.opacity = '1';
-          } else {
-            row.classList.remove('checked');
-            checkbox.style.opacity = '0';
-          }
-          
-          updateAddButtonState();
-        });
-      });
-      
-      checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('click', function(e) {
-          e.stopPropagation(); 
-          
-          checkboxes.forEach(cb => {
-            if (cb !== checkbox) {
-              cb.checked = false;
-              cb.closest('tr').classList.remove('checked');
-              cb.style.opacity = '0';
-            }
-          });
-          
-          const row = checkbox.closest('tr');
-          if (checkbox.checked) {
-            row.classList.add('checked');
-          } else {
-            row.classList.remove('checked');
-          }
-          
-          updateAddButtonState();
-        });
-      });
-    }
 
-    chooseBtn?.addEventListener('click', () => {
-      diamondContentEls.forEach(el => el.classList.toggle('hidden'));
+          selectedDiamondData = getSelectedDiamondData();
+          if (!selectedDiamondData) {
+            alert('Please select a diamond before adding to cart.');
+            return;
+          }
+          if (!variantIdInputEl?.value) {
+            console.error('Missing main product variant ID.');
+            alert('Unable to add ring to cart (missing variant).');
+            return;
+          }
+
+          startAtcLoading();
+
+          const { carat, color, clarity, certificate_number, shape, price } = selectedDiamondData;
+          const formattedShape = shape ? shape.charAt(0).toUpperCase() + shape.slice(1).toLowerCase() : 'Diamond';
+          const formattedDescription = `${formattedShape} ${carat}ct , ${color}, ${clarity}`;
+          const formattedCertificate = `${certificate_number}`;
+
+          const diamondPayload = mapDiamondForProxy(selectedDiamondData);
+          const createResp = await createProductProxy(diamondPayload);
+
+          if (!createResp) {
+            alert('Failed to create diamond product. Please try again.');
+            stopAtcLoadingRestore();
+            return;
+          }
+          if (createResp.error) {
+            console.error('Diamond create error:', createResp);
+            alert('Diamond product creation error. See console for details.');
+            stopAtcLoadingRestore();
+            return;
+          }
+
+          const diamondVariantId = extractVariantIdFromCreateResponse(createResp);
+          if (!diamondVariantId) {
+            console.error('No diamond variant ID found in create response:', createResp);
+            alert('Could not find diamond variant to add to cart.');
+            stopAtcLoadingRestore();
+            return;
+          }
+
+          const bundleToken = crypto?.randomUUID?.() || Date.now().toString();
+          const cartPayload = {
+            items: [
+              {
+                id: variantIdInputEl.value,
+                quantity: 1,
+                properties: {
+                  Diamond: formattedDescription,
+                  'Certificate Info': formattedCertificate,
+                  _bundle_token: bundleToken,
+                  _bundle_role: 'ring',
+                  _diamond_price: price != null ? String(price) : '',
+                },
+              },
+              {
+                id: diamondVariantId,
+                quantity: 1,
+                properties: {
+                  _bundle_token: bundleToken,
+                  _bundle_role: 'diamond',
+                },
+              },
+            ],
+          };
+
+          try {
+            const res = await fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(cartPayload),
+            });
+            if (!res.ok) throw new Error(`Add to cart failed (${res.status})`);
+            const data = await res.json();
+            console.log('Ring + Diamond added to cart:', data);
+            window.location.href = '/cart';
+          } catch (err) {
+            console.error('Add to cart failed', err);
+            alert('Something went wrong adding to cart.');
+            stopAtcLoadingRestore();
+          }
+        });
+      }
+
+      hideElements(diamondContentSections);
+      if (diamondTableWrapperEl) diamondTableWrapperEl.classList.add('hidden');
+      if (diamondSummaryBoxEl) diamondSummaryBoxEl.classList.add('hidden');
+      initFilterTabsAndSlidersUI();
+      updateAddToCartButtonLabel();
+      updateAddToCartButtonState();
     });
+  </script>
+{% endif %}
+<!--
+  ------------------------------------------------------------------- SCHEMA & LIQUID -------------------------------------------------------------------
+-->
 
-    async function fetchWishlistStatus() {
-      try {
-        const res = await fetch(
-          `${appurl}/api/wishlist?customerId=${customerId}&productId=${productId}&shop=${shop}`
-        );
-
-        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
-        const result = await res.json();
-        if (result?.data && result.data.length > 0) {
-          wishlisted = true;
-          diamondContentEls.forEach(el => el.classList.remove('hidden'));
-          
-          initTableSelection();
-        } else {
-          diamondContentEls.forEach(el => el.classList.add('hidden'));
-        }
-      } catch (err) {
-        console.error('Fetch status error:', err);
-      }
-    }
-
-    async function toggleWishlist() {
-      if (!customerId) {
-        alert('Please log in to add items to your wishlist.');
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append('customerId', customerId);
-      formData.append('productId', productId);
-      formData.append('shop', shop);
-      formData.append('_action', wishlisted ? 'DELETE' : 'CREATE');
-
-      try {
-        await fetch(`${appurl}/api/wishlist`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        wishlisted = !wishlisted;
-
-        if (wishlisted) {
-          diamondContentEls.forEach(el => el.classList.remove('hidden'));
-          initTableSelection();
-        } else {
-          diamondContentEls.forEach(el => el.classList.add('hidden'));
-        }
-
-        console.log('Wishlisted:', wishlisted);
-      } catch (err) {
-        console.error('Toggle wishlist error:', err);
-      }
-    }
-
-    addToCartBtn.disabled = true;
-    
-    chooseBtn?.addEventListener('click', toggleWishlist);
-    fetchWishlistStatus();
-  });
-</script>
-
-<div class="media-modal" id="sharedMediaModal">
-  <div class="media-content">
-    <button class="media-close">×</button>
-    <iframe id="mediaPlayer" allowfullscreen></iframe>
-  </div>
-</div>
-
+<!-- schema -->
 {% schema %}
 {
-  "name": "Wishlist",
+  "name": "Product Extension",
   "target": "section",
+  "templates": ["product"],
   "settings": [
     {
       "type": "product",
@@ -899,10 +1359,8 @@
       "default": "#666666"
     },
     {
-      "type": "text",
-      "id": "text",
-      "label": "Text",
-      "default": "Add to wishlist"
+      "type": "header",
+      "content": "Extension Settings"
     }
   ]
 }
